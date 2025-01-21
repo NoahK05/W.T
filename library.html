@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html ng-app="libraryApp">
+<head>
+  <title>Library Application</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+</head>
+<body ng-controller="LibraryController">
+  <h1>Library Management</h1>
+
+  <table border="1">
+    <tr>
+      <th>Category</th>
+      <th>Book Count</th>
+    </tr>
+    <tr ng-repeat="item in library">
+      <td>{{ item.category }}</td>
+      <td><input type="number" ng-model="item.count"></td>
+    </tr>
+  </table>
+
+  <h2>Add New Category</h2>
+  <form ng-submit="addCategory()">
+    <input type="text" ng-model="newCategory" placeholder="Category Name" required>
+    <input type="number" ng-model="newCount" placeholder="Book Count" required>
+    <button type="submit">Add Category</button>
+  </form>
+  <p ng-show="errorMessage" style="color:red;">{{ errorMessage }}</p>
+
+  <script>
+    angular.module('libraryApp', [])
+      .controller('LibraryController', ['$scope', function($scope) {
+        $scope.library = [
+          { category: 'Fiction', count: 120 },
+          { category: 'Non-Fiction', count: 80 },
+          { category: 'Science', count: 150 },
+          { category: 'Mathematics', count: 70 }
+        ];
+
+        $scope.newCategory = '';
+        $scope.newCount = '';
+        $scope.errorMessage = '';
+
+        $scope.addCategory = function() {
+          if ($scope.library.some(item => item.category.toLowerCase() === $scope.newCategory.toLowerCase())) {
+            $scope.errorMessage = 'Category name must be unique.';
+          } else {
+            $scope.library.push({ category: $scope.newCategory, count: parseInt($scope.newCount) });
+            $scope.newCategory = '';
+            $scope.newCount = '';
+            $scope.errorMessage = '';
+          }
+        };
+      }]);
+  </script>
+</body>
+</html>
